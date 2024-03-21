@@ -1,3 +1,5 @@
+    
+{% load staticfiles %}
 <style>
     #post-list {
         display: flex;
@@ -52,11 +54,7 @@
     }
 </style>
 
-<script>
-    function goToPost(slug) {
-        window.location.href = "/post/"+slug;
-    }
-</script>
+<script src="{% static 'JS/post_cardJS.js' %}"></script>
 
 <div id="post-list">
     <div id="img-container-list">

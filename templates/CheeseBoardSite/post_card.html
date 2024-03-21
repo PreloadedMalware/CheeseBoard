@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <style>
     /* THIS CSS IS JUST A STARTING POINT, FEEL FREE TO MAKE ANY IMPROVEMENTS */
     #post {
@@ -39,11 +40,7 @@
     }
 </style>
 
-<script>
-    function goToPost(slug) {
-        window.location.href = "/post/"+slug;
-    }
-</script>
+<script src="{% static 'JS/post_cardJS.js' %}"></script>
 
 <div id="post">
     <div id="img-container">

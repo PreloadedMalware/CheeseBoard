@@ -1,5 +1,5 @@
-{%load custom_tags %}
-
+{% load custom_tags %}
+{% load staticfiles %}
 <style>
     /* THIS CSS IS JUST A STARTING POINT, FEEL FREE TO MAKE ANY IMPROVEMENTS */
     .grid {
@@ -53,21 +53,8 @@
         color: white;
     }
 </style>
-<script type="text/javascript" src="{{ STATIC_URL }}/static/jquery-3.7.1.js"></script>
-<script>
-    var isFullHeight = false;
-    function setGridSize(){
-        document.querySelector(".grid").style.width = "100%";
-    }
-
-    function toggleListHeight(button) {
-        let parentDiv = $(button).parent().find(".grid");
-        parentDiv.toggleClass("list-full-height");
-        
-        isFullHeight = !isFullHeight;
-        document.getElementById("showButton").innerText = isFullHeight ? "Show Less" : "Show More";
-    }
-</script>
+<script type="text/javascript" src="{% static 'JS/jquery-3.7.1.js' %}"></script>
+<script src="{% static 'JS/post_gridJS.js' %}"></script>
 
 <div class="grid-wrapper">
     <div class="grid {% if list_flag %} list-grid list-normal-height {% else %} normal-grid {% endif %}">
