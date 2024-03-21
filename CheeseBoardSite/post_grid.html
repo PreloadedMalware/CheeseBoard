@@ -1,0 +1,91 @@
+{%load custom_tags %}
+
+<style>
+    /* THIS CSS IS JUST A STARTING POINT, FEEL FREE TO MAKE ANY IMPROVEMENTS */
+    .grid {
+        /* position: relative; */
+        display: grid;
+        border: 1px solid #333;
+        gap: 0;
+        padding: 20px;
+        width: 100%;
+        border-radius: 10px;
+    }
+
+    .grid-wrapper {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .normal-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-auto-flow: dense;
+    }
+
+    .list-grid {
+        grid-template-columns: 1fr;
+        grid-auto-flow: row;
+        transition: 300ms;
+        overflow: scroll;
+        overflow-x: hidden;
+    }
+
+    .list-normal-height {
+        height: 30vh;
+    }
+
+    .list-full-height {
+        height: 75vh;
+    }
+
+    .post {
+        padding: 10px;
+    }
+
+    #showButton {
+        position: absolute;
+        bottom: 1em;
+        left: 0;
+        right: 0;
+        margin: auto;
+        background-color: crimson;
+        color: white;
+    }
+</style>
+<script type="text/javascript" src="{{ STATIC_URL }}/static/jquery-3.7.1.js"></script>
+<script>
+    var isFullHeight = false;
+    function setGridSize(){
+        document.querySelector(".grid").style.width = "100%";
+    }
+
+    function toggleListHeight(button) {
+        let parentDiv = $(button).parent().find(".grid");
+        parentDiv.toggleClass("list-full-height");
+        
+        isFullHeight = !isFullHeight;
+        document.getElementById("showButton").innerText = isFullHeight ? "Show Less" : "Show More";
+    }
+</script>
+
+<div class="grid-wrapper">
+    <div class="grid {% if list_flag %} list-grid list-normal-height {% else %} normal-grid {% endif %}">
+        {% if list_flag %}
+            <p id="title">{{ title }}</p>
+        {% endif %}
+    
+        {% for post in posts %}
+            <div class="post">
+                {% if list_flag %}
+                    {% render_post_list_card post %}
+                {% else %}
+                    {% render_post post %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    {% if list_flag %}
+        <button onclick="toggleListHeight(this)" id="showButton">Show More</button>
+    {% endif %}
+</div>

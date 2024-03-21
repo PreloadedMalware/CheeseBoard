@@ -1,0 +1,35 @@
+{% extends 'CheeseBoardSite/form_base.html' %}
+{% block title_block %}Make an Account{% endblock %}
+{% block page_title %}Make an Account{% endblock %}
+
+{% block form_content %}
+    {% if registered %}
+        <a href="{% url 'CheeseBoardSite:index' %}">Homepage</a>
+    {% else %}
+        <div class="form-container">
+            <form id="user-form" method="post" action="{% url 'CheeseBoardSite:register' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ user_form.non_field_errors }}
+                {% for field in user_form %}
+                    <div class="form-row">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors.as_text }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% for field in account_form %}
+                    <div class="form-row">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors.as_text }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <input type="submit" name="submit" value="Register" />
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}

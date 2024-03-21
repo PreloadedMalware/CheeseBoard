@@ -1,0 +1,86 @@
+{% extends 'CheeseBoardSite/form_base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}Login{% endblock %}
+{% block page_title %}Login{% endblock %}
+
+<style>
+    .form-container {
+        width: 300px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-family: "Segoe UI", Arial, sans-serif;
+    }
+    
+    .form-row {
+        margin-bottom: 15px;
+    }
+    
+    label {
+        display: block;
+        font-weight: bold;
+    }
+    
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        font-family: "Segoe UI", Arial, sans-serif;
+    }
+    
+    input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+    
+    .form-message {
+        margin-top: 15px;
+        text-align: center;
+    }
+    
+    .form-link {
+        color: #007bff;
+    }
+    
+    .form-link:hover {
+        text-decoration: underline;
+    }
+    
+</style>
+
+{% block form_content %}
+    <!-- Input login details -->
+    <div class="form-container">
+        <form id="login-form" method="post" action="{% url 'CheeseBoardSite:login' %}">
+            {% csrf_token %}
+            <div class="form-row">
+                <label for="username">Username</label>
+                <input type="text" name="username" value="" />
+            </div>
+
+            <div class="form-row">
+                <label for="password">Password</label>
+                <input type="password" name="password" value="" />
+            </div>
+
+            <br />
+            <input type="submit" value="Login" />
+            <p class="form-message">Don't have an account? <a class="form-link" href="{% url 'CheeseBoardSite:register' %}">Make one!</a></p>
+        </form>
+    </div>
+{% endblock %}
