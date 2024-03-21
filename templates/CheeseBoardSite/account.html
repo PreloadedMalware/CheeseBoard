@@ -153,9 +153,28 @@
         {%if is_account_holder %}
             <div id="account-settings">
                 <h2>Account Settings</h2>
-                <form action="/account" method="post">
+                <form action="{% url 'CheeseBoardSite:edit_page' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <div class="form-row">
+                    {% for field in edit_form %}
+                        <div class="form-row">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="error">{{ field.errors.as_text }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    {% for field in pfp_form %}
+                        <div class="form-row">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="error">{{ field.errors.as_text }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <input type="submit" value="Save Changes">
+                    <!-- <div class="form-row">
                         <label for="username">Username:</label>
                         <input type="text" id="username" name="username" value="{{ username }}">
                     </div>
@@ -177,7 +196,7 @@
                     </div>
                     <div class="form-row">
                         <input type="submit" value="Save Changes">
-                    </div>
+                    </div> -->
                 </form>
             </div>
             <div id="delete-account" style="display: none;">

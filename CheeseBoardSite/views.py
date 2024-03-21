@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404 
-from CheeseBoardSite.models import Account, Comment, Post, Cheese, Stats
-from CheeseBoardSite.forms import CommentForm, SavedForm, UserForm, AccountForm, PostForm, AccountSettingsForm
+from CheeseBoardSite.models import Account, Comment, Post, Cheese, Stats, Saved
+from CheeseBoardSite.forms import CommentForm, SavedForm, UserForm, AccountForm, PostForm, AccountSettingsForm, AccountProfilePicForm
 from CheeseBoardSite.models import Account, Post, Cheese, User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
@@ -23,10 +23,11 @@ def index(request):
 
     most_liked_posts_last_week_list = Post.objects.filter(timeDate__gte =(datetime.now() - timedelta(days=7))).order_by('-likes')[:10]
     if request.user.is_authenticated:
+        following_list = request.user.account.following.all()
         latest_posts_from_following_list = Post.objects.order_by('-timeDate')[:10]
+        context_dict['followingPosts'] = posts_to_list(latest_posts_from_following_list)
     context_dict['mostLiked'] = posts_to_list(most_liked_posts_last_week_list)
     print(most_liked_posts_last_week_list)
-    context_dict['followingPosts'] = posts_to_list(latest_posts_from_following_list)
     
     #context_dict['posts'] += posts_to_list(most_cheese_points_accounts_list)
     
@@ -109,7 +110,13 @@ def account(request):
         userAccount = Account.objects.get(user = request.user)
         user_posts = Post.objects.filter(account = userAccount)
         user_posts_list = posts_to_list(user_posts)
-        print(user_posts_list)
+        edit_form = AccountSettingsForm(initial={
+            'username': request.user.username,
+            'email': request.user.email,
+            'forename': request.user.first_name,
+            'surname': request.user.last_name,
+        })
+        pfp_form = AccountProfilePicForm()
         context_dict = {
             "username": request.user.username,
             "email": request.user.email,
@@ -127,6 +134,8 @@ def account(request):
             "badges": userAccount.badges,
             "is_account_holder": (userAccount.user == request.user),
             "posts": user_posts_list,
+            "edit_form": edit_form,
+            "pfp_form": pfp_form,
         }
 
         return render(request, 'CheeseBoardSite/account.html', context=context_dict)
@@ -209,16 +218,20 @@ def view_page(request, slug):
 
 @login_required
 def edit_page(request):
-    context_dict = {}
-    if request.method == 'POST':
-        form = AccountSettingsForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save() 
-    else:
-        form = AccountSettingsForm()
+    account = get_object_or_404(Account, user=request.user)
 
-    context_dict['form'] = form
-    return render(request, 'CheeseBoardSite/account.html', context_dict)
+    if request.method == 'POST':
+        form = AccountSettingsForm(request.POST, instance=account.user)
+        pfp_form = AccountProfilePicForm(request.POST, request.FILES, instance=account)
+        print(form.errors)
+        if form.is_valid() and pfp_form.is_valid():
+            print(account.user)
+            account.user = form.save()
+            # request.user= user
+            if len(request.FILES) > 0:
+                account = pfp_form.save()         
+    return redirect('CheeseBoardSite:account')
+
 
 @login_required
 def create_post(request):
@@ -256,8 +269,10 @@ def view_post(request, slug):
             'slug': post.slug,
             'likes': post.likes,
             'cheeses': post.cheeses.all(),
-            'comments' : Comment.objects.filter(post = post)
+            'comments' : Comment.objects.filter(post = post),
+            'saved_form': SavedForm(),
         }
+
         context_dict["comment_form"]=comment_post(request, slug)
         if request.method == 'POST':
             print(request.POST.get('body'))
@@ -308,15 +323,12 @@ def comment_post(request, slug):
 
 @login_required
 def save_post(request, slug):
+    post = get_object_or_404(Post, slug=slug)
     if request.method == 'POST':
         form = SavedForm(request.POST)
         if form.is_valid():
-            saved = form.save()
-            saved.name = form.cleaned_data.get('name')
-            post_slug = slug
-            saved.post = Post.objects.get(slug=post_slug)
-            saved.account = Account.objects.get(user = request.user)
-            return redirect('')  # Redirect to a success page
-    else:
-        form = SavedForm()
-    return render(request, 'CheeseBoardSite/post.html', {'form': form})
+            name = f"{request.user.username}'s posts"
+            saved, created = Saved.objects.get_or_create(name=name, account=Account.objects.get(user=request.user))
+            saved.posts.add(post)
+            saved.save()
+    return redirect('CheeseBoardSite:view_post', slug=slug)

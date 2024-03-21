@@ -13,23 +13,25 @@ class AccountSettingsForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'forename', 'surname')
-        
-    def clean_email(self):
-        username = self.cleaned_data.get('username')
-        email = self.cleaned_data.get('email')
-
-        if email and User.objects.filter(email=email).exclude(username=username).count():
-            raise forms.ValidationError('This email address is already in use. Please supply a different email address.')
-        return email
 
     def save(self, commit=True):
-        user = super(AccountForm, self).save(commit=False)
+        user = super().save(commit=False)
         user.email = self.cleaned_data['email']
+        user.username = self.cleaned_data['username']
+        user.first_name = self.cleaned_data['forename']
+        user.last_name = self.cleaned_data['surname']
 
         if commit:
             user.save()
 
         return user
+    
+class AccountProfilePicForm(forms.ModelForm):
+    profilePic = forms.ImageField(help_text="Please upload a profile picture.", required=False)
+    
+    class Meta:
+        model = Account
+        fields = ('profilePic',)
 
 class UserForm(forms.ModelForm):
     passwordConfirm = forms.CharField(widget=forms.PasswordInput(), label='Confirm Password')
@@ -96,7 +98,9 @@ class CommentForm(forms.ModelForm):
         fields = ['body', ]
         
 class SavedForm(forms.ModelForm):
-    name = forms.CharField(widget=forms.HiddenInput, max_length= 50, required = True)
+    name = forms.CharField(widget=forms.HiddenInput, max_length= 50, required = False)
+    posts = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Post.objects.all(), required = False)
+    account = forms.ModelChoiceField(widget=forms.HiddenInput, queryset=Account.objects.all(), required = False)
     
     class Meta:
         model = Saved
