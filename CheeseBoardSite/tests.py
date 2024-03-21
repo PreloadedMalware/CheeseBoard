@@ -13,16 +13,15 @@ from django.forms import fields as django_fields
 
 # Create your tests here.
 
-# creating a user for testing
-user = User.objects.create(username = "user", first_name = "first", last_name = "last", email = "abc@123.com")
-user.set_password("PleaseDontFlagPasswordValidation123")
-user.save()
-
-# u might want to create a superuser not sure
-
 class RegisterTests(TestCase):
-    def randomTest():
-        return
+    def testEmptyField(self):
+        # recieve an empty username
+        form_data =  form_data = {"username": "", "password": "testpassword", "email": "test@example.com", "first_name":"first", "last_name":"last" }
+        request = self.client.post(reverse("CheeseBoardSite:register"), data = form_data)
+        # decode it
+        content = request.content.decode("utf-8")
+        # confirm that response has an error
+        self.assertTrue('<div class="error">' in content, "No error is being raised for fields left blank")
 
 class ProfileTest(TestCase):
     def randomTest():
