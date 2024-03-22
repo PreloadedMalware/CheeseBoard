@@ -18,4 +18,5 @@ urlpatterns = [
     path('post/<slug:slug>/save', views.save_post, name='save_post'),
     path('post/<slug:slug>/like', views.like_post, name='like_post'),
     path('post/<slug:slug>/comment', views.comment_post, name='comment_post'),
+    path('post/<slug:slug>/like', views.like_comment, name='like_comment'),
 ]

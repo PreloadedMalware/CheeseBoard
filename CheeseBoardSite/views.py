@@ -240,6 +240,7 @@ def create_post(request):
             post = form.save(commit=False)
             post.account = request.user.account  
             post.timeDate = timezone.now()  
+            request.user.account.stats.posts += 1
             post.likes = 0  
             post.save()
             form.save_m2m()
@@ -308,7 +309,7 @@ def comment_post(request, slug):
         post_slug = slug
         post = Post.objects.get(slug=post_slug)
         account = Account.objects.get(user = request.user)
-        account.cheese_points +=5
+        account.stats.commentsGiven +=1
         account.save()    
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -325,15 +326,11 @@ def comment_post(request, slug):
     return form   
 
 @login_required
-def like_comment(request,slug, id):
-    if id:
-        try:
-            comment = Comment.objects.get(ID = id)
-            comment.likes +=1
-            comment.save()
-        except:
-            pass
-    return redirect('CheeseBoardSite:view_post', slug=slug)
+def like_comment(request,slug):
+        comment = Comment.objects.get(ID = id)
+        comment.likes +=1
+        comment.save()
+        return redirect('CheeseBoardSite:view_post', slug=slug)
     
 @login_required
 def save_post(request, slug):
