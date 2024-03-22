@@ -14,22 +14,18 @@ import random
 
 def index(request):
     context_dict = {}
-    
-    
-    #most_cheese_points_accounts_list = Account.objects.order_by('-cheese_points')[:10]
-    
     context_dict['tags'] = tag_to_list(Post.objects.all().order_by('-timeDate'))  
     context_dict['posts'] = posts_to_list(Post.objects.all())
-
     most_liked_posts_last_week_list = Post.objects.filter(timeDate__gte =(datetime.now() - timedelta(days=7))).order_by('-likes')[:10]
+    latest_posts_from_following_list =[]
     if request.user.is_authenticated:
         following_list = request.user.account.following.all()
-        latest_posts_from_following_list = Post.objects.order_by('-timeDate')[:10]
-        context_dict['followingPosts'] = posts_to_list(latest_posts_from_following_list)
+        for follower in following_list:   
+            followerr = Account.objects.get(user=follower)
+            latest_posts_from_following_list += Post.objects.filter( account= followerr)
+            latest_posts_from_following_list[:10]
+    context_dict['followingPosts'] = posts_to_list(latest_posts_from_following_list)
     context_dict['mostLiked'] = posts_to_list(most_liked_posts_last_week_list)
-    
-    #context_dict['posts'] += posts_to_list(most_cheese_points_accounts_list)
-    
     return render(request, 'CheeseBoardSite/index.html', context=context_dict)
 
 def tag_to_list(post_list):
@@ -199,7 +195,7 @@ def view_page(request, slug):
         account = Account.objects.get(slug=account_slug)
         user_posts = Post.objects.filter(account = account)
         user_posts_list = posts_to_list(user_posts)
-        is_following = request.user.account.following.filter(username=account.user.username).exists()
+        
         context_dict ={
             'username' : account.user.username,
             'profilePic' : account.profilePic,          
@@ -212,8 +208,11 @@ def view_page(request, slug):
             "posts": user_posts_list,
             "follow_form": form,
             "slug": account.slug,
-            "is_following": is_following,
+            
         }
+        if request.user.is_authenticated:
+            is_following = request.user.account.following.filter(username=account.user.username).exists()
+            context_dict["is_following"] = is_following
 
 
     return render(request, 'CheeseBoardSite/account.html', context=context_dict)  #WHAT HTML
