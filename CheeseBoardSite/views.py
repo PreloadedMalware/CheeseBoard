@@ -211,6 +211,7 @@ def view_page(request, slug):
             "is_account_holder": (account.user == request.user),
             "posts": user_posts_list,
         }
+        #follow(request, account.user,False)
 
     return render(request, 'CheeseBoardSite/account.html', context=context_dict)  #WHAT HTML
 
@@ -265,8 +266,6 @@ def view_post(request, slug):
             'comments' : Comment.objects.filter(post = post),
             'saved_form': SavedForm(),
         }
-
-        follow(request,post.account.user,False)
         context_dict["comment_form"]=comment_post(request, slug)
         if request.method == 'POST':
             print(request.POST.get('body'))
@@ -274,22 +273,19 @@ def view_post(request, slug):
     
 
 @login_required
-def follow(request, follow_user, option):
+def follow(request, follow_user, option): ##    FOR FOLLOWING OPTION=TRUE, FOR UNFOLLOWING OPTION = FALSE
     account_user = request.user
     account = Account.objects.get(user = account_user)
     follow = Account.objects.get(user = follow_user)
+    if follow == None:
+        return redirect(reverse('CheeseBoardSite:index'))
     if option:        
-        account.followers.add(follow.user)
-        follow.following.add(account.user)
-        account.save()
-        follow.save()
+        account.following.add(follow.user)
+        follow.followers.add(account.user)
     elif not option:
-        account.followers.remove(follow.user)
-        follow.following.remove(account.user)
-        account.save()
-        follow.save()
-    
-    #return HttpResponseRedirect(reverse('CheeseBoardSite/account.html', args = [username]))
+        account.following.remove(follow.user)
+        follow.followers.remove(account.user)
+    return redirect('CheeseBoardSite:view_page', slug=follow.slug)
 
 @login_required
 def like_post(request, slug):
