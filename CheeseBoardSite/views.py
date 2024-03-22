@@ -1,7 +1,11 @@
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404 
 from CheeseBoardSite.models import Account, Comment, Post, Cheese, Stats, Saved
+<<<<<<< HEAD
 from CheeseBoardSite.forms import FollowForm, CommentForm, LikeForm, SavedForm, UserForm, AccountForm, PostForm, AccountSettingsForm, AccountProfilePicForm
+=======
+from CheeseBoardSite.forms import CommentForm, SavedForm, UserForm, AccountForm, PostForm, AccountSettingsForm, LikeForm, AccountProfilePicForm
+>>>>>>> 3398f1f6bcab0920e01473fde7e375ea23da3a3b
 from CheeseBoardSite.models import Account, Post, Cheese, User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
@@ -298,6 +302,7 @@ def follow(request, username, option):
 
 @login_required
 def like_post(request, slug):
+<<<<<<< HEAD
     post = Post.objects.get(slug=slug)
     post.likes += 1
     post.save()
@@ -309,6 +314,17 @@ def like_post(request, slug):
     #        post.likes += 1
     #        post.save()
     #return HttpResponseRedirect(reverse('CheeseBoardSite/post.html', args = [slug]))
+=======
+    if slug:
+        post_slug = slug
+        post = Post.objects.get(slug=post_slug)
+        post.likes +=1
+        post.save()
+        account = Account.objects.get(user = request.user)
+        account.stats.likesTaken +=1
+        account.save()        
+    return redirect('CheeseBoardSite:view_post', slug=slug)
+>>>>>>> 3398f1f6bcab0920e01473fde7e375ea23da3a3b
 
 @login_required
 def comment_post(request, slug):
