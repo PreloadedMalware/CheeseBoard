@@ -1,14 +1,28 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-
+from django.core.files.uploadedfile import SimpleUploadedFile
+from CheeseBoardSite.models import Account, Stats
+from datetime import datetime
+from django.utils import timezone
 
 class UserLoginLogoutTestCase(TestCase):
     def setUp(self):
         # Create a test user
+        self.mock_image = SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
         self.test_user = User.objects.create_user(username='testuser', email='test@example.com', password='password123')
-        self.test_user.is_active = True
-        self.test_user.save()
+        self.test_stats = Stats.objects.create()
 
+        self.test_account = Account.objects.create(
+            user=self.test_user,
+            dateOfBirth=datetime.now(),
+            profilePic=self.mock_image,
+            stats=self.test_stats
+        )
+    def test_account_creation(self):
+        self.assertEqual(self.test_account.user.username, 'testuser')
+        self.assertTrue(self.test_account.profilePic, 'Profile picture is set')
+
+        
     def test_user_login_valid_credentials(self):
         # Test logging in with valid credentials
         response = self.client.post('/login/', {'username': 'testuser', 'password': 'password123'}, follow=True)
@@ -37,7 +51,7 @@ class UserLoginLogoutTestCase(TestCase):
         response = self.client.get('/logout/', follow=True)
         self.assertRedirects(response, '/')
         # After logout, the user should be anonymous and not authenticated
-        self.assertFalse(response.context['user'].is_autheAnticated)
+        self.assertFalse(response.context['user'].is_authenticated)
 
     def tearDown(self):
         # Clean up the test user
