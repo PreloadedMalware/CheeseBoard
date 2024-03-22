@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="StyleSheet.css">
+
+<style>
+    .comment {
+        border: 1px solid #333;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .comment-content {
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
+
+    #comment-text {
+        margin: 0.25em;
+        margin-top: 0;
+        padding-bottom: 0.25em;
+    }
+    
+    #time {
+        font-size: 10pt;
+        margin-left: 2em;
+    
+    }
+</style>
+
+<div class="comment">
+    <div class="comment-content">
+        <div id="op">
+            <img src="{{ comment.account.profilePic.url }}" alt="profile picture" id="op-pfp">
+            <p id="op-name">{{ comment.account }}</p>
+            <p id="time">{{ comment.timeDate}}</p>
+        </div>
+        <p id="comment-text">{{ comment.body }}</p>
+        
+        <!-- FORM FOR LIKING GOES HERE -->
+    </div>
+</div>

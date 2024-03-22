@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- Including navbar at top of page -->
+{% include 'CheeseBoardSite\navbar.html' %}
+
+<!-- Custom tag used to place files from `templates\CheeseBoardSite\` as a compontent to respect placement of other compontents -->
+{%load custom_tags %}
+
+<title>Cheese Board</title>
+
+<style>
+
+    {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        font-family: Segoe UI;
+        line-height: 1.6;
+    }
+    
+    #page {
+        width: 90%;
+        margin: 0 auto;
+    }
+    
+    #navbar {
+        padding: 1em;
+        background-color: #333;
+        color: #fff;
+    }
+    
+    #main-grid {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-top: 2em;
+    }
+    
+    #posts-grid {
+        width: 60%;
+    }
+    
+    #side-posts {
+        width: 35%;
+    }
+    
+    .list-posts {
+        margin-bottom: 2em;
+    }
+    
+    .post {
+        background-color: #f4f4f4;
+        padding: 1em;
+        margin-bottom: 1em;
+    }
+    
+    #create-post-button {
+        display: block;
+        width: 200px;
+        text-align: center;
+        margin: 2em auto;
+        padding: 1em;
+        background-color: crimson;
+        color: #fff;
+        text-decoration: none; /* Changed from button to link */
+        border-radius: 5px;
+    }
+    
+    #create-post-button:hover {
+        background-color: darkred;
+    }
+
+</style>
+
+
+<div id="page">
+    <div id="navbar">
+        
+    </div>
+    <!-- Render header custom tag with tags passed in from context_dict -->
+    {% render_header tags %}
+
+    <div id="main-grid">
+        <!-- Render post grid custom tag with posts passed in from context_dict -->
+        <div id="posts-grid">
+            {% render_post_grid posts False%}
+        </div>
+        <div id="side-posts">
+            <!-- Render post list of top posts -->
+            <div class="list-posts">
+                {% render_post_grid posts True%}
+            </div>
+             <!-- Render post list of followes' posts -->
+             <div class="list-posts">
+                {% render_post_grid posts True%}
+            </div>
+        </div>
+    </div>
+
+    <a href="{% url 'CheeseBoardSite:create_post' %}" id="create-post-button">Create Post</button>
+</div>

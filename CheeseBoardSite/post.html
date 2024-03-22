@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!-- Including navbar at top of page -->
+{% include 'CheeseBoardSite\navbar.html' %}
+
+{% load custom_tags %}
+
+<head>
+    <title>Cheese Board</title>
+    
+    <style>
+        /* THIS CSS IS JUST A STARTING POINT, FEEL FREE TO MAKE ANY IMPROVEMENTS */
+        * {
+            box-sizing: border-box;
+        }
+    
+        #page {
+            font-family: 'Segoe UI';
+        }
+    
+        #navbar{
+            padding: 2em;
+        }
+    
+        #container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 90vh;
+            margin-top: 2em;
+        }
+    
+        #content {
+            display:grid;
+            grid-template-columns: 2.6fr 1.4fr;
+            width: 50%;
+            border: 1px solid #333;
+            border-radius: 10px;
+        }
+    
+        #text {
+            padding-left: 2em;
+            border-right: 1px solid #333;
+            width: 100%;
+    
+        }
+    
+        #img-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-top-left-radius: 10px;
+            border-right: 1px solid #333;
+        }
+    
+        img {
+            object-fit: cover;
+            width:100%;
+            border-bottom: 1px solid #333;
+            max-height: 70vh;
+    
+        }
+    
+        #op-pfp {
+            width: 2em;
+            aspect-ratio: 1;
+            border-radius: 50%;
+        }
+    
+        #op {
+            display: flex;
+            align-items: center;
+    
+        }
+
+        #op-name {
+            margin-left: 1em; 
+            font-size: 14pt;
+        }
+    
+        #title {
+            margin-bottom: 0em;
+            margin-top: 0.25em;
+        }
+    
+        #cheeses {
+            display: inline;
+        }
+    
+        #cheese {
+            font-style: italic;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding-left: 1em;
+            padding-right: 1em;
+            padding-top: 0.1em;
+            padding-bottom: 0.1em;
+    
+        }
+    
+        #post-text {
+            margin-top: 0.25em;
+        }
+
+        #post {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #comments {
+            margin: 1em;
+
+        }
+
+        #caption {
+            margin-top: 0.3em;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="page">
+        <div id="navbar">
+    
+        </div>
+    
+        <div id="container">
+            <div id="content">
+                <div id="post">
+                    <div id="img-container">
+                        <img src="{{ image.url }}">
+                    </div>
+                    <div id="text">
+                        <h1 id="title">{{ title }}</h1>
+                        <p id="caption">{{ caption }}</p>
+                        <div id="cheeses">
+                            {% for tag in cheeses %}
+                                <span id="cheese">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        <div id="op">
+                            <img src="{{ account.profilePic.url }}" alt="profile picture" id="op-pfp">
+                            <p id="op-name">{{ account.user.username }}</p>
+                        </div>
+                        <div id="actions">
+                            <!-- SAVE AND LIKE FORMS GO HERE -->
+                        </div>
+                        <div>
+                            <p id="post-text">{{ body }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="comments">
+                    <h2 style="text-align: center; margin: 0; margin-bottom: 0.5em;">Comments</h3>
+                    {% if comments %}
+                        {% for comment in comments %}
+                            {% render_comment comment %}
+                        {% endfor %}
+                    {% else %}
+                        <p style="text-align: center; font-style: italic; font-size: 14pt;">No comments yet</p>
+                    {% endif %}
+
+                    <div id="post-comment">
+                        <!-- COMMENT FORM GOES HERE -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

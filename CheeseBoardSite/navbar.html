@@ -1,0 +1,177 @@
+<script>
+    // This script is responsible for the dropdown menu in the navbar
+
+    // We need to wait until the DOM is loaded before we can interact with it
+    document.addEventListener('DOMContentLoaded', function() {
+        // Store the current state of the dropdown menu, intially closed
+        let isDropdownOpen = false;
+
+        // Find the menu div
+        const menu = document.querySelector('#menu');
+
+        // Define the function to handle the dropdown button being clicked
+        const handleDropdownClick = () => {
+            // Toggle the state of the dropdown
+            isDropdownOpen = !isDropdownOpen;
+
+            // If the dropdown is open, add the open class to the menu, otherwise remove it
+            if (isDropdownOpen) {
+                menu.classList.add('open');
+            } else {
+                menu.classList.remove('open');
+            }
+        };
+
+        // Define the function to handle the dropdown losing focus
+        const handleDropdownFocusLoss = (event) => {
+            // If the dropdown is open and the related target is not inside the menu, close the dropdown
+            if (!event.relatedTarget || !menu.contains(event.relatedTarget)) {
+                isDropdownOpen = false;
+                menu.classList.remove('open');
+            }
+        };
+
+        // Add event listeners to the dropdown button and the menu to handle clicks and focus loss
+        document.querySelector('#accButton').addEventListener('click', handleDropdownClick);
+        document.querySelector('#dropdown').addEventListener('focusout', handleDropdownFocusLoss);
+    });
+</script>
+
+<style>
+    /* THIS CSS IS JUST A STARTING POINT, FEEL FREE TO MAKE ANY IMPROVEMENTS */
+    .navbar {
+        margin-top: 0;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+        width: 100%;
+        background-color: #333;
+        color: white;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: 3px 0;
+        z-index: 1000;
+        font-family: "Segoe UI", sans-serif; 
+    }
+
+    /* Custom style for the white divider */
+    .WhiteDivider {
+        position: relative;
+        padding: 0 10px;
+        color: white;
+        font-size: 1.25em;
+        cursor: pointer;
+        transition: color 0.3s ease; /* Added transition for color change */
+    }
+
+    /* Styling for the left and right lines */
+    .WhiteDivider::before,
+    .WhiteDivider::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: white;
+        z-index: -1; /* Ensure the lines are behind the text */
+    }
+
+    /* Positioning the left line */
+    .WhiteDivider::before {
+        left: -5px; /* Adjust the position to align it properly */
+    }
+
+    /* Positioning the right line */
+    .WhiteDivider::after {
+        right: -5px; /* Adjust the position to align it properly */
+    }
+
+    /* Hover effect */
+    .WhiteDivider:hover {
+        color: #333; /* Change text color on hover */
+    }
+
+    button, WhiteDivider {
+        font-family: "Segoe UI", sans-serif; 
+        background-color: transparent;
+        border: none;
+        border-radius: 10px;
+        color: inherit;
+        font-size: 1.25em;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover, #navLink:hover {
+        background-color: white;
+        color: #333;
+    }
+
+    #list > ul {
+        list-style-type: none;
+        padding: .5em; 
+        margin: 1em;
+        width: auto;
+        background-color: #333;
+        color: white;
+        border-radius: 10px;
+    }
+
+    li {
+        padding: .2em;
+    }
+
+    .accountLink {
+        color: white;
+        padding: .5em;
+        font-size: 1em;
+        white-space: nowrap;
+    }
+
+    .accountLink:hover {
+        text-decoration: underline;
+    }
+
+    #menu {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.15s ease, visibility 0.15s ease;
+    }
+
+    #menu.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+
+</style>
+
+<div class="navbar">
+    <!-- Buttons for the navbar are defined here -->
+    <div class="WhiteDivider" id="navLink" href="/">Home</div>
+    <!-- add null as search term to show all posts by default -->
+    <div class="WhiteDivider" href="/search/%00">Search</div>
+
+    <!-- Dropdown menu for the account button -->
+    <div id="dropdownContainer">
+        <div id="dropdown" >
+            <button id="accButton">Account</button>
+            <div id="menu" style="position: relative">
+                <div id="list" style="position: absolute;">
+                    <ul>
+                        {% if user.is_authenticated %}
+                            <li><div class="WhiteDivider" href="/account" class="accountLink">View Account</div></li>
+                            <li><div class="WhiteDivider" href="/logout" class="accountLink">Logout</div></li>
+                        {% else %}
+                            <li><div class="WhiteDivider" href="/register" class="accountLink">Register</div></li>
+                            <li><div class="WhiteDivider" href="/login" class="accountLink">Login</div></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
