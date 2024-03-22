@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404 
 from CheeseBoardSite.models import Account, Comment, Post, Cheese, Stats, Saved
-from CheeseBoardSite.forms import CommentForm, SavedForm, UserForm, AccountForm, PostForm, AccountSettingsForm, AccountProfilePicForm
+from CheeseBoardSite.forms import CommentForm, SavedForm, UserForm, AccountForm, PostForm, AccountSettingsForm, AccountProfilePicForm, FollowForm
 from CheeseBoardSite.models import Account, Post, Cheese, User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
@@ -102,7 +102,6 @@ def register(request):
                              'account_form': account_form,
                              'registered': registered})
     
-# ADD CHANGE DETAILS FORM -- SEE ACCOUNT.HTML FOR FIELDS REQUIRED -- BASIS STARTED IN edit_account VIEW
 @login_required
 def account(request):
     if request.user.is_authenticated:
@@ -193,13 +192,14 @@ def search(request, query):
     context_dict['tags'] = tag_to_list(Post.objects.all().order_by('-timeDate'))
     return render(request, 'CheeseBoardSite/search.html', context=context_dict)
 
-# ADD FOLLOW FORM
 def view_page(request, slug):
     if slug:
         account_slug = slug
+        form = FollowForm(request.POST)
         account = Account.objects.get(slug=account_slug)
         user_posts = Post.objects.filter(account = account)
         user_posts_list = posts_to_list(user_posts)
+        is_following = request.user.account.following.filter(username=account.user.username).exists()
         context_dict ={
             'username' : account.user.username,
             'profilePic' : account.profilePic,          
@@ -210,8 +210,11 @@ def view_page(request, slug):
             "badges": account.badges,
             "is_account_holder": (account.user == request.user),
             "posts": user_posts_list,
+            "follow_form": form,
+            "slug": account.slug,
+            "is_following": is_following,
         }
-        #follow(request, account.user,False)
+
 
     return render(request, 'CheeseBoardSite/account.html', context=context_dict)  #WHAT HTML
 
@@ -274,19 +277,25 @@ def view_post(request, slug):
     
 
 @login_required
-def follow(request, follow_user, option): ##    FOR FOLLOWING OPTION=TRUE, FOR UNFOLLOWING OPTION = FALSE
-    account_user = request.user
-    account = Account.objects.get(user = account_user)
-    follow = Account.objects.get(user = follow_user)
-    if follow == None:
-        return redirect(reverse('CheeseBoardSite:index'))
-    if option:        
-        account.following.add(follow.user)
-        follow.followers.add(account.user)
-    elif not option:
-        account.following.remove(follow.user)
-        follow.followers.remove(account.user)
-    return redirect('CheeseBoardSite:view_page', slug=follow.slug)
+def follow_unfollow_account(request, slug):
+    account_to_follow = get_object_or_404(Account, slug=slug)
+    current_user_account = request.user.account
+
+    if request.method == 'POST':
+        form = FollowForm(request.POST)
+        if form.is_valid():
+            # Prevent users from following themselves
+            if account_to_follow != current_user_account:
+                if current_user_account.following.filter(username=account_to_follow.user.username).exists():
+                    # Unfollow
+                    current_user_account.following.remove(account_to_follow.user)
+                    account_to_follow.followers.remove(current_user_account.user)
+                else:
+                    # Follow
+                    current_user_account.following.add(account_to_follow.user)
+                    account_to_follow.followers.add(current_user_account.user)
+    
+    return redirect('CheeseBoardSite:view_page', slug=slug)
 
 @login_required
 def like_post(request, slug):

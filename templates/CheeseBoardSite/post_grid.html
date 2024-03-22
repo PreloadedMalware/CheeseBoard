@@ -51,6 +51,12 @@
         margin: auto;
         background-color: crimson;
         color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.25em;
+        padding: 10px 20px;
+        cursor: pointer;
+        width: auto;
     }
 </style>
 <script type="text/javascript" src="{% static 'JS/jquery-3.7.1.js' %}"></script>
@@ -61,16 +67,21 @@
         {% if list_flag %}
             <p id="title">{{ title }}</p>
         {% endif %}
-    
-        {% for post in posts %}
+        {% if posts.count == 0 %}
             <div class="post">
-                {% if list_flag %}
-                    {% render_post_list_card post %}
-                {% else %}
-                    {% render_post post %}
-                {% endif %}
+                <p>No posts found</p>
             </div>
-        {% endfor %}
+        {% else %}
+            {% for post in posts %}
+                <div class="post">
+                    {% if list_flag %}
+                        {% render_post_list_card post %}
+                    {% else %}
+                        {% render_post post %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
     {% if list_flag %}
         <button onclick="toggleListHeight(this)" id="showButton">Show More</button>
