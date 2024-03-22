@@ -40,6 +40,15 @@ class RegisterTest(TestCase):
         self.assertEqual(account.dateOfBirth, parse_date('2000-01-01'))  # Ensure date matches the expected format
         self.assertEqual(account.faveCheese, self.cheese)
 
+    def testEmptyField(self):
+        # recieve an empty username
+        form_data =  form_data = {"username": "", "password": "testpassword", "email": "test@example.com", "first_name":"first", "last_name":"last" }
+        request = self.client.post(reverse("CheeseBoardSite:register"), data = form_data)
+        # decode it
+        content = request.content.decode("utf-8")
+        # confirm that response has an error
+        self.assertTrue('<div class="error">' in content, "No error is being raised for fields left blank")
+
     def tearDown(self):
         # Cleanup any objects created
         User.objects.filter(username='newuser').delete()
