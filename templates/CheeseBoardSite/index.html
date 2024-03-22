@@ -62,6 +62,11 @@
             text-decoration: none;
         }
     
+        h2 {
+            font-family: 'Segoe UI';
+            font-size: 2em;
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -73,7 +78,7 @@
         <!-- Render header custom tag with tags passed in from context_dict -->
         {% render_header tags %}
         
-        <h1 id="title">Posts!</h1>
+        <h2>Posts!</h2>
         <div id="main-grid">
             <!-- Render post grid custom tag with posts passed in from context_dict -->
             <div id="posts-grid">
@@ -81,11 +86,12 @@
             </div>
             <div id="side-posts">
                 <!-- Render post list of top posts -->
-                <h1 id="title">Most liked posts - Week</h1>
+                <h2>Most liked posts - Week</h2>
                 <div class="list-posts">
                     {% render_post_grid mostLiked True%}
                 </div>
                  <!-- Render post list of followes' posts -->
+                <h2>Followers' posts</h2>
                  <div class="list-posts">
                     {% render_post_grid posts True%}
                 </div>

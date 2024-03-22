@@ -108,5 +108,6 @@ class SavedForm(forms.ModelForm):
         model = Saved
         fields = ['name', 'posts', 'account']
         
-class FollowForm(forms.ModelForm):
-    account_slug = forms.CharField() 
+class FollowForm(forms.Form):
+    # No fields required, as the action is implicit
+    pass

@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <!-- <link rel="stylesheet" href="{% static 'StyleSheet.css' %}"> -->
     <style>
+        body {
+            font-family: 'Segoe UI';
+        }
         #title {
             font-size: 2.5em;
             font-family: 'Segoe UI';
@@ -124,10 +127,14 @@
         #sidebar-content button, input[type=submit] {
             font-family: 'Segoe UI';
             border: none;
-            width: 30%;
+            width: 40%;
             border-radius: 10px;
             background-color: crimson;
             color: white;
+        }
+
+        #submit {
+            margin-bottom: 1em;
         }
     </style>
 
@@ -150,9 +157,13 @@
         {% if is_account_holder %}
             <button onclick="showAccountSettings()">Account Settings</button> 
             <br>
-            <button onclick="showDeleteAccount()">Delete Account</button>
-            <br>
             <button onclick="showUserPosts()">Your Posts</button>
+        {% else %}
+            <form action="{% url 'CheeseBoardSite:follow' slug %}" method="post">
+                {% csrf_token %}
+
+                <input type="submit" value="{% if is_following %}Unfollow{% else %}Follow{% endif %}">
+            </form>
         {% endif %}
     </div>
 </div>
@@ -182,43 +193,7 @@
                             {% endif %}
                         </div>
                     {% endfor %}
-                    <input type="submit" value="Save Changes">
-                    <!-- <div class="form-row">
-                        <label for="username">Username:</label>
-                        <input type="text" id="username" name="username" value="{{ username }}">
-                    </div>
-                    <div class="form-row">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" value="{{ email }}">
-                    </div>
-                    <div class="form-row">
-                        <label for="profilePic">Profile Picture:</label>
-                        <input type="file" id="profilePic" name="profilePic">
-                    </div>
-                    <div class="form-row">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password">
-                    </div>
-                    <div class="form-row">
-                        <label for="confirmPassword">Confirm Password:</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword">
-                    </div>
-                    <div class="form-row">
-                        <input type="submit" value="Save Changes">
-                    </div> -->
-                </form>
-            </div>
-            <div id="delete-account" style="display: none;">
-                <h2>Delete Account</h2>
-                <form action="/account/delete" method="post">
-                    {% csrf_token %}
-                    <div class="form-row">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password">
-                    </div>
-                    <div class="form-row">
-                        <input type="submit" value="Delete Account">
-                    </div>
+                    <input type="submit" value="Save Changes" id="submit">
                 </form>
             </div>
             <div id="user-posts-hidden">
