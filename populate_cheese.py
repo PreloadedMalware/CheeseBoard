@@ -28,7 +28,7 @@ def populate():
     ]
 
     statss = [
-        {"ID" : 1,
+        {"ID" : 2,
         "timeOnCheeseBoard" : 17,
          "posts" : 0,
          "likesTaken" : 3,
@@ -36,7 +36,7 @@ def populate():
          "commentsTaken" : 0,
          "commentsGiven" : 2,
          "cheesesReferenced" : 0},
-         {"ID" : 2,
+         {"ID" : 1,
         "timeOnCheeseBoard" : 182,
          "posts" : 4,
          "likesTaken" : 15,
@@ -87,7 +87,7 @@ def populate():
          "accountCreationDate" : datetime.date(2020,11,11),
          "dateLastLoggedIn" : datetime.date(2024,11,3),
          "profilePic" : "profile_images/Run.jpg",
-         "statss" : 2,
+         "statss" : 1,
          "faveCheese" : "Cheddar",
          "followers" : ["Steve", "Marge"],
          "following" : ["Steve"],
@@ -101,7 +101,7 @@ def populate():
          "accountCreationDate" : datetime.date(2022,12,20),
          "dateLastLoggedIn" : datetime.date(2023,2,15),
          "profilePic" : "profile_images/Sit.jpg",
-         "statss" : 1,
+         "statss" : 2,
          "faveCheese" : "Red Leister",
          "followers" : [],
          "following" : ["Carlie19"],
