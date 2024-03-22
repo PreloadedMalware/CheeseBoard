@@ -29,10 +29,10 @@ class UserLoginLogoutTestCase(TestCase):
         self.assertTrue(response.context['user'].is_authenticated)
         self.assertRedirects(response, '/')
 
-    def test_user_login_invalid_credentials(self):
+    def test_user_login_invalid_credentials_password(self):
         # Test login with invalid credentials
         response = self.client.post('/login/', {'username': 'testuser', 'password': 'wrongpassword'})
-        self.assertIn("Incorrect Login details.", response.content.decode())
+        self.assertIn("Password is wrong.", response.content.decode())
 
     def test_inactive_user_login(self):
         # Deactivate the test user

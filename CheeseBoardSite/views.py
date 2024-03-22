@@ -143,20 +143,25 @@ def user_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        isValidLogin = authenticate(username=username, password=password)
+        # get the username
+        user = User.objects.filter(username=username).first()
 
-        if isValidLogin:
-            if isValidLogin.is_active:
-                # if valid account is active log them back in
-                login(request, isValidLogin)
-                return redirect(reverse('CheeseBoardSite:index'))
-            else:
-                # account is inactive
-                return HttpResponse("Account is disabled.")
-        else:
-            # not valid login details
-            print(f"Login details are incorrect.")
-            return HttpResponse("Incorrect Login details.")
+        # check if the username exists
+        if user is None:
+            print(f"Username does not exist.")
+            return HttpResponse("Username does not exist.")
+        # username exists and password is right and user is active
+        elif user is not None and user.check_password(password) and user.is_active:
+            login(request, user)
+            return redirect(reverse('CheeseBoardSite:index'))
+        # login is correct but user is inactive
+        elif user is not None and user.check_password(password) and user.is_active == False:
+            return HttpResponse("Account is disabled.")
+        # password is wrong
+        elif user is not None and user.check_password(password) == False:
+            print(f"Password is wrong.")
+            return HttpResponse("Password is wrong.")
+
     else:
         # not a http post
         return render(request, 'CheeseBoardSite/login.html')
