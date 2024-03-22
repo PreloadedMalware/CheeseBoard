@@ -108,8 +108,3 @@ class SavedForm(forms.ModelForm):
     class Meta:
         model = Saved
         fields = ['name', 'posts', 'account']
-        
-class LikeForm(forms.ModelForm):
-    post_slug = forms.CharField() 
-class FollowForm(forms.ModelForm):
-    account_slug = forms.CharField() 

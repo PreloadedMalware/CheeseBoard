@@ -1,11 +1,7 @@
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404 
 from CheeseBoardSite.models import Account, Comment, Post, Cheese, Stats, Saved
-<<<<<<< HEAD
-from CheeseBoardSite.forms import FollowForm, CommentForm, LikeForm, SavedForm, UserForm, AccountForm, PostForm, AccountSettingsForm, AccountProfilePicForm
-=======
 from CheeseBoardSite.forms import CommentForm, SavedForm, UserForm, AccountForm, PostForm, AccountSettingsForm, LikeForm, AccountProfilePicForm
->>>>>>> 3398f1f6bcab0920e01473fde7e375ea23da3a3b
 from CheeseBoardSite.models import Account, Post, Cheese, User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
@@ -280,41 +276,19 @@ def view_post(request, slug):
         context_dict["comment_form"]=comment_post(request, slug)
         if request.method == 'POST':
             print(request.POST.get('body'))
-        like_post(request, slug)
-        account = post.account
-        #follow(request, account.user.username, False)
         return render(request, 'CheeseBoardSite/post.html', context = context_dict)
     
 
 @login_required
-def follow(request, username, option):
-    account_user = request.user
-    account = Account.objects.get(user = account_user)
-    follow_user = get_object_or_404(User, username = username)
-    follow = Account.objects.get(user = follow_user)
-    if option:        
-        account.following.add(follow_user)
-        follow.followers.add(account_user)
-    else:
-        account.following.remove(follow_user)
-        follow.followers.remove(account_user)
-    #return HttpResponseRedirect(reverse('CheeseBoardSite/account.html', args = [username]))
+def follow(request, username):
+    account = Account.objects.get(user = request.user)
+    follow = get_object_or_404(User, username = username)
+    follow = Account.objects.get(user = follow)
+    account.following.add(follow)
+    return HttpResponseRedirect(reverse('CheeseBoardSite/account.html', args = [username]))
 
 @login_required
 def like_post(request, slug):
-<<<<<<< HEAD
-    post = Post.objects.get(slug=slug)
-    post.likes += 1
-    post.save()
-    #if request.method == 'POST':
-    #    form = LikeForm(request.POST)
-    #    if form.is_valid():
-    #        post_id = form.cleaned_data['post_slug']
-    #        post = get_object_or_404(Post, slug=post_id)
-    #        post.likes += 1
-    #        post.save()
-    #return HttpResponseRedirect(reverse('CheeseBoardSite/post.html', args = [slug]))
-=======
     if slug:
         post_slug = slug
         post = Post.objects.get(slug=post_slug)
@@ -324,7 +298,6 @@ def like_post(request, slug):
         account.stats.likesTaken +=1
         account.save()        
     return redirect('CheeseBoardSite:view_post', slug=slug)
->>>>>>> 3398f1f6bcab0920e01473fde7e375ea23da3a3b
 
 @login_required
 def comment_post(request, slug):
