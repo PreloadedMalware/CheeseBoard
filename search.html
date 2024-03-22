@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<!-- Including navbar at top of page -->
+{% include 'CheeseBoardSite\navbar.html' %}
+
+<!-- Custom tag used to place files from `templates\CheeseBoardSite\` as a compontent to respect placement of other compontents -->
+{%load custom_tags %}
+
+{%load staticfiles %}
+<head>
+    <title>Cheese Board</title>
+
+    <link rel="stylesheet" href="{% static 'StyleSheet.css' %}"> 
+</head>
+
+<body onload="setGridSize()">
+    <div id="page">
+        <div id="navbar">
+    
+        </div>
+        <!-- Render header custom tag with tags passed in from context_dict -->
+        {% render_header tags %}
+    
+        <p id="search-term">Results for <span id="term">{{ term }}</span></p>
+        {% render_post_grid posts False %}
+    </div>
+</body>

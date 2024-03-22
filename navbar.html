@@ -1,0 +1,31 @@
+{% load staticfiles %}
+<script src="{% static 'JS/navbarJS.js' %}"></script>
+
+<link rel="stylesheet" href="{% static 'StyleSheet.css' %}"> 
+
+<div class="navbar">
+    <!-- Buttons for the navbar are defined here -->
+    <div class="WhiteDivider" id="navLink" href="/">Home</div>
+    <!-- add null as search term to show all posts by default -->
+    <div class="WhiteDivider" href="/search/%00">Search</div>
+
+    <!-- Dropdown menu for the account button -->
+    <div id="dropdownContainer">
+        <div id="dropdown" >
+            <button id="accButton">Account</button>
+            <div id="menu" style="position: relative">
+                <div id="list" style="position: absolute;">
+                    <ul>
+                        {% if user.is_authenticated %}
+                            <li><div class="WhiteDivider" href="/account" class="accountLink">View Account</div></li>
+                            <li><div class="WhiteDivider" href="/logout" class="accountLink">Logout</div></li>
+                        {% else %}
+                            <li><div class="WhiteDivider" href="/register" class="accountLink">Register</div></li>
+                            <li><div class="WhiteDivider" href="/login" class="accountLink">Login</div></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

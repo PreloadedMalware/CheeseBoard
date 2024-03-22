@@ -1,0 +1,17 @@
+    
+{% load staticfiles %}
+
+<link rel="stylesheet" href="{% static 'StyleSheet.css' %}">
+
+<script src="{% static 'JS/post_cardJS.js' %}"></script>
+
+<div id="post-list">
+    <div id="img-container-list">
+        <img id="image-list" src="{{ post.img.url }}" alt="cheese">
+    </div>
+
+    <div id="text-list" onclick="goToPost('{{ post.slug }}')">
+        <h2 id="post-list-title" class="truncate-title">{{ post.title }}</h2>
+        <p class="truncate-list">{{ post.content }}</p>
+    </div>
+</div>

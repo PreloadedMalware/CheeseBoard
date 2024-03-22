@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="{% static 'StyleSheet.css' %}"> 
+<div class="comment">
+    <div class="comment-content">
+        <div id="op">
+            <img src="{{ comment.account.profilePic.url }}" alt="profile picture" id="op-pfp">
+            <p id="op-name" ><a href="/profile/{{ comment.account.slug }}">{{ comment.account }}</a></p>
+            <p id="time">{{ comment.timeDate}}</p>
+        </div>
+        <p id="comment-text">{{ comment.body }}</p>
+
+        <!-- FORM FOR LIKING GOES HERE -->
+    </div>
+</div>
+

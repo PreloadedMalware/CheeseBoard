@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!-- Including navbar at top of page -->
+{% include 'CheeseBoardSite\navbar.html' %}
+
+{% load custom_tags %}
+
+<head>
+    <title>Cheese Board</title>
+    <link rel="stylesheet" href="{% static 'StyleSheet.css' %}"> 
+
+
+</head>
+
+<body>
+    <div id="page">
+        <div id="navbar">
+    
+        </div>
+    
+        <div id="container">
+            <div id="content">
+                <div id="post">
+                    <div id="img-container">
+                        <img src="{{ image.url }}">
+                    </div>
+                    <div id="text">
+                        <h1 id="title">{{ title }}</h1>
+                        <p id="caption">{{ caption }}</p>
+                        <div id="cheeses">
+                            {% for tag in cheeses %}
+                                <span id="cheese">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        <div id="op">
+                            <img src="{{ account.profilePic.url }}" alt="profile picture" id="op-pfp">
+                            <p id="op-name"><a href="/profile/{{ account.slug }}">{{ account.user.username }}</a></p>
+                        </div>
+                        <div>
+                            <p id="post-text">{{ body }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="comments">
+                    <h2 style="text-align: center; margin: 0; margin-bottom: 0.5em;">Comments</h3>
+                    <div id="overflow">
+                        {% if comments %}
+                            {% for comment in comments %}
+                                {% render_comment comment %}
+                            {% endfor %}
+                        {% else %}
+                            <p style="text-align: center; font-style: italic; font-size: 14pt;">No comments yet</p>
+                        {% endif %}
+                    </div>
+
+                    <div id="post-comment">
+                        {% for field in comment_form %}
+                            <form method="POST" action="{% url 'CheeseBoardSite:view_post' slug %}" id="comments-form">
+                                {% csrf_token %}
+                                <div class="form-row">
+                                    <label for="{{ field.id_for_label }}">Post a Comment</label>
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <div class="error">{{ field.errors.as_text }}</div>
+                                    {% endif %}
+                                    <input type="submit" value="Post Comment">
+                                </div>
+                            </form>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
