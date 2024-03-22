@@ -96,6 +96,9 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['body', ]
+
+class LikeForm(forms.Form):
+    pass
         
 class SavedForm(forms.ModelForm):
     name = forms.CharField(widget=forms.HiddenInput, max_length= 50, required = False)

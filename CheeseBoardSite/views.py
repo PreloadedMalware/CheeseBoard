@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from django.shortcuts import render, get_object_or_404 
 from CheeseBoardSite.models import Account, Comment, Post, Cheese, Stats, Saved
-from CheeseBoardSite.forms import CommentForm, SavedForm, UserForm, AccountForm, PostForm, AccountSettingsForm, AccountProfilePicForm
+from CheeseBoardSite.forms import CommentForm, SavedForm, UserForm, AccountForm, PostForm, AccountSettingsForm, LikeForm, AccountProfilePicForm
 from CheeseBoardSite.models import Account, Post, Cheese, User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
@@ -295,9 +295,9 @@ def like_post(request, slug):
         post.likes +=1
         post.save()
         account = Account.objects.get(user = request.user)
-        account.cheese_points +=1
+        account.stats.likesTaken +=1
         account.save()        
-    return HttpResponseRedirect(reverse('CheeseBoardSite/post.html', args = [slug]))
+    return redirect('CheeseBoardSite:view_post', slug=slug)
 
 @login_required
 def comment_post(request, slug):

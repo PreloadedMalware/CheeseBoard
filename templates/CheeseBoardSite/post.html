@@ -167,6 +167,13 @@
                             <p id="post-text">{{ body }}</p>
                         </div>
                         <div id="actions">
+                            <div id="like-form-container">
+                                <form method="POST" action="{% url 'CheeseBoardSite:like_post' slug %}">
+                                    {% csrf_token %}
+                                    {{ like_form.as_p }}
+                                    <button type="submit">{{ likes }} Cheer!</button>
+                                </form>
+                            </div>
                             <div id="saved-form-container">
                                 <form method="POST" action="{% url 'CheeseBoardSite:save_post' slug %}">
                                     {% csrf_token %}
