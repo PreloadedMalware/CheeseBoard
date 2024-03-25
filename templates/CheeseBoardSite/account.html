@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+{% include 'CheeseBoardSite/navbar.html' %}
+
+{% load custom_tags %}
+{% load staticfiles %}
+<head>
+    <title>Account Settings</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <!-- <link rel="stylesheet" href="{% static 'StyleSheet.css' %}"> -->
+    <style>
+        body {
+            font-family: 'Segoe UI';
+        }
+        #title {
+            font-size: 2.5em;
+            font-family: 'Segoe UI';
+            letter-spacing: 1.1rem;
+            font-weight: 400;
+            margin: 0.2em;
+            text-align: center;
+            padding: 1em; 
+        }
+    
+        #navbar{
+            padding: 1.5em;
+            padding-bottom: 0; 
+        }
+    
+        #container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 50vh;
+        }
+
+        #sidebar {
+            width: 20vw;
+            border: 1px solid black;
+            border-radius: 10px;
+            height: auto;
+        }
+
+        #sidebar-content {
+            padding: 1em;
+        }
+
+        #account-info {
+            padding-left: .5em;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        #account-info-text {
+            padding-left: 1em;
+        }
+
+        #account-info > img {
+            border-radius: 50%;
+        }
+
+        #main {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            margin: 0;
+            border: 1px solid black;
+            width: 50%; 
+            border-radius: 10px;
+        }
+
+        h2 {
+            margin: 0;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-row label {
+            width: 150px;
+            text-align: left;
+            margin-right: 20px;
+        }
+
+        .form-row input[type=text], .form-row input[type=password], .form-row input[type=email], .form-row input[type=file] {
+            flex-grow: 1;
+        }
+
+        .form-row input[type=file]{
+            width: auto;
+        }
+
+        .error {    
+            color: red;
+        }
+
+        #sidebar-content > button {
+            border: 1px solid black;
+            padding: 5px;
+            margin-bottom: 1em;
+            border-radius: 10px;
+
+        }
+        
+        #user-posts-hidden {
+            margin-bottom: 1em;
+            width: 80%;
+            display: none;
+        }
+
+        #user-posts-visible {
+            margin-bottom: 1em;
+            width: 80%;
+            display: block;
+        }
+
+        #sidebar-text {
+            font-size: 10pt;
+        }
+
+        #sidebar-content button, input[type=submit] {
+            font-family: 'Segoe UI';
+            border: none;
+            width: 40%;
+            border-radius: 10px;
+            background-color: crimson;
+            color: white;
+        }
+
+        #submit {
+            margin-bottom: 1em;
+        }
+    </style>
+
+    <script src="{% static 'JS/accountJS.js' %}"></script>
+</head>
+<div id="navbar">
+        
+</div>
+<h1 id="title">Account Settings</h1>
+<div id="sidebar" class="w3-sidebar w3-bar-block">
+    <div id="sidebar-content">
+        <div id="account-info">
+            <img src="{{ profilePic.url }}" alt="Profile Picture" style="width: 100px; height: 100px;">
+            <div id="account-info-text">
+                <h3>{{ username }}</h3>
+                <p id="sidebar-text">{{ followers }} followers &Tab; {{ stats.likesTaken }} likes &Tab; {{ stats.posts }} posts</p>
+            </div>
+        </div>
+        <br>
+        {% if is_account_holder %}
+            <button onclick="showAccountSettings()">Account Settings</button> 
+            <br>
+            <button onclick="showUserPosts()">Your Posts</button>
+        {% else %}
+            <form action="{% url 'CheeseBoardSite:follow' slug %}" method="post">
+                {% csrf_token %}
+
+                <input type="submit" value="{% if is_following %}Unfollow{% else %}Follow{% endif %}">
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<div id="container">
+    <div id="main">
+        {%if is_account_holder %}
+            <div id="account-settings">
+                <h2>Account Settings</h2>
+                <form action="{% url 'CheeseBoardSite:edit_page' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in edit_form %}
+                        <div class="form-row">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="error">{{ field.errors.as_text }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    {% for field in pfp_form %}
+                        <div class="form-row">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="error">{{ field.errors.as_text }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <input type="submit" value="Save Changes" id="submit">
+                </form>
+            </div>
+            <div id="user-posts-hidden">
+                <h2>Your Posts</h2>
+                {% render_post_grid posts False %}
+            </div>
+        {% else %}
+            <!-- FORM TO FOLLOW USER WILL GO HERE -->
+            <div id="user-posts-visible">
+                <h2>{{username}}'s Posts</h2>
+                {% render_post_grid posts False %}
+            </div>
+        {% endif %}
+    </div>
+</div>

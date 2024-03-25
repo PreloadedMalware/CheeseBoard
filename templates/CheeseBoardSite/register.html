@@ -9,6 +9,7 @@
         <div class="form-container">
             <form id="user-form" method="post" action="{% url 'CheeseBoardSite:register' %}" enctype="multipart/form-data">
                 {% csrf_token %}
+                {{ user_form.non_field_errors }}
                 {% for field in user_form %}
                     <div class="form-row">
                         <label for="{{ field.id_for_label }}">{{ field.label }}</label>

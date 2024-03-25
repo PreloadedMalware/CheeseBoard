@@ -1,35 +1,236 @@
+<!DOCTYPE html>
 <!-- Including navbar at top of page -->
-{% include 'CheeseBoardSite\navbar.html' %}
+{% include 'CheeseBoardSite/navbar.html' %}
 
+{% load custom_tags %}
 
-<title>Cheese Board</title>
-
-<style>
-    /* THIS CSS IS JUST A STARTING POINT, FEEL FREE TO MAKE ANY IMPROVEMENTS */
-    * {
-        box-sizing: border-box;
-    }
-
-    #page {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-
-    #navbar{
-        padding: 1em;
-    }
+<head>
+    <title>Cheese Board</title>
     
-</style>
+    <style>
+        /* THIS CSS IS JUST A STARTING POINT, FEEL FREE TO MAKE ANY IMPROVEMENTS */
+        * {
+            box-sizing: border-box;
+        }
+    
+        #page {
+            font-family: 'Segoe UI';
+        }
+    
+        #navbar{
+            padding: 2em;
+        }
+    
+        #container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 90vh;
+            margin-top: 2em;
+        }
+    
+        #content {
+            display:grid;
+            grid-template-columns: 2.6fr 1.4fr;
+            width: 60%;
+            border: 1px solid #333;
+            border-radius: 10px;
+        }
+    
+        #text {
+            padding-left: 2em;
+            border-right: 1px solid #333;
+            width: 100%;
+    
+        }
+    
+        #img-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-top-left-radius: 10px;
+            border-right: 1px solid #333;
+        }
+    
+        img {
+            object-fit: cover;
+            width:100%;
+            border-bottom: 1px solid #333;
+            max-height: 70vh;
+    
+        }
+    
+        #op-pfp {
+            width: 2em;
+            aspect-ratio: 1;
+            border-radius: 50%;
+        }
+    
+        #op {
+            display: flex;
+            align-items: center;
+    
+        }
 
-<div id="page">
-    <div id="navbar">
-        
-    </div>
+        #op-name {
+            margin-left: 1em; 
+            font-size: 14pt;
+            text-decoration: none;
+            display: block;
+        }
 
-    <!-- Temp layout to ensure URL is working once implemented -->
-    <div id="content">
-        <h1>{{ post.title }}</h1>
-        <p>{{ post.content }}</p>
+        #op-name a {
+            all: inherit;
+            margin: 0;
+            cursor: pointer;
+        }
+    
+        #title {
+            margin-bottom: 0em;
+            margin-top: 0.25em;
+        }
+    
+        #cheeses {
+            display: inline;
+        }
+    
+        #cheese {
+            font-style: italic;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding-left: 1em;
+            padding-right: 1em;
+            padding-top: 0.1em;
+            padding-bottom: 0.1em;
+    
+        }
+    
+        #post-text {
+            margin-top: 0.25em;
+        }
+
+        #post {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #comments {
+            position: relative;
+            margin: 1em;
+            max-height: 90vh;
+        }
+
+        #caption {
+            margin-top: 0.3em;
+            font-style: italic;
+        }
+
+        #comments-form {
+            position: absolute;
+            bottom: 0;
+            background-color: white;
+        }
+
+        #overflow {
+            max-height: 80vh;
+            overflow: scroll;
+            overflow-x: hidden;
+        }
+
+        #actions {
+            display: flex;
+            justify-content: row;
+            align-items: flex-start;
+            gap: 1em;
+            margin-top: 1em;
+        }
+
+        #container button {
+            background-color: crimson;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.5em;
+            cursor: pointer;
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="page">
+        <div id="navbar">
+    
+        </div>
+    
+        <div id="container">
+            <div id="content">
+                <div id="post">
+                    <div id="img-container">
+                        <img src="{{ image.url }}">
+                    </div>
+                    <div id="text">
+                        <h1 id="title">{{ title }}</h1>
+                        <p id="caption">{{ caption }}</p>
+                        <div id="cheeses">
+                            {% for tag in cheeses %}
+                                <span id="cheese">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        <div id="op">
+                            <img src="{{ account.profilePic.url }}" alt="profile picture" id="op-pfp">
+                            <p id="op-name"><a href="/profile/{{ account.slug }}">{{ account.user.username }}</a></p>
+                        </div>
+                        <div>
+                            <p id="post-text">{{ body }}</p>
+                        </div>
+                        <div id="actions">
+                            <div id="like-form-container">
+                                <form method="POST" action="{% url 'CheeseBoardSite:like_post' slug %}">
+                                    {% csrf_token %}
+                                    {{ like_form.as_p }}
+                                    <button type="submit">{{ likes }} Cheer!</button>
+                                </form>
+                            </div>
+                            <div id="saved-form-container">
+                                <form method="POST" action="{% url 'CheeseBoardSite:save_post' slug %}">
+                                    {% csrf_token %}
+                                    {{ saved_form.as_p }}
+                                    <button type="submit">Save Post</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="comments">
+                    <h2 style="text-align: center; margin: 0; margin-bottom: 0.5em;">Comments</h3>
+                    <div id="overflow">
+                        {% if comments %}
+                            {% for comment in comments %}
+                                {% render_comment comment %}
+                            {% endfor %}
+                        {% else %}
+                            <p style="text-align: center; font-style: italic; font-size: 14pt;">No comments yet</p>
+                        {% endif %}
+                    </div>
+
+                    <div id="post-comment">
+                        {% for field in comment_form %}
+                            <form method="POST" action="{% url 'CheeseBoardSite:view_post' slug %}" id="comments-form">
+                                {% csrf_token %}
+                                <div class="form-row">
+                                    <label for="{{ field.id_for_label }}">Post a Comment</label>
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <div class="error">{{ field.errors.as_text }}</div>
+                                    {% endif %}
+                                    <button type="submit">Post Comment</button>
+                                </div>
+                            </form>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</body>

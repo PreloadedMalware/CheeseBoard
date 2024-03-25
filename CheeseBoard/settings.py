@@ -28,7 +28,10 @@ SECRET_KEY = 'r2k3y^^*l0#3(w4l$5_pad14*k-09o3jc37un6voqe^+1qjeg5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "2758344h.pythonanywhere.com",
+    "localhost",
+]
 
 
 # Application definition
@@ -71,8 +74,10 @@ TEMPLATES = [
         },
     },
 ]
+
 # if @login_required is used, if someone is not logged in redirect to here
 LOGIN_URL = 'CheeseBoardSite:login'
+
 WSGI_APPLICATION = 'CheeseBoard.wsgi.application'
 
 

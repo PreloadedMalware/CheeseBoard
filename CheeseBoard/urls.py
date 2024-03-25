@@ -22,5 +22,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('CheeseBoardSite.urls')),  
+    path('', include('CheeseBoardSite.urls')),
+    path('create_post/', views.create_post, name='create_post'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

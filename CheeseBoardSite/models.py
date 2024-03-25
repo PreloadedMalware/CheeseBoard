@@ -3,6 +3,8 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils import timezone
+import random
+import string
 
 # Create your models here.
 class Cheese(models.Model):
@@ -41,28 +43,33 @@ class Account(models.Model):
     dateOfBirth = models.DateField(default = datetime.today())
     accountCreationDate = models.DateTimeField(default = timezone.now())
     dateLastLoggedIn = models.DateTimeField(default = timezone.now())
-    profilePic = models.ImageField(upload_to='profile_images', blank=True)
+    profilePic = models.ImageField(upload_to='profile_images', default='profile_images/default.jpg')
+    cheese_points = models.IntegerField(default = 0)
     slug = models.SlugField(unique = True)
 
     stats = models.OneToOneField(
         Stats,
         on_delete=models.CASCADE,
         primary_key = True,
+        unique = False,
     )
     faveCheese = models.ForeignKey(
         Cheese,
         on_delete=models.SET_NULL,
         null = True,
-    )
-    followers = models.ManyToManyField(
-        'self',
-        blank = True,
-        null = True,
+        default = "",
     )
     following = models.ManyToManyField(
-        'self',
+        User,
         blank = True,
         null = True,
+        related_name='followers2'
+    )
+    followers = models.ManyToManyField(
+        User,
+        blank = True,
+        null = True,
+        related_name='following2'
     )
     badges = models.ManyToManyField(
         Badge,
@@ -71,14 +78,24 @@ class Account(models.Model):
     )
     
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.user.username)
+        #queryset = Account.objects.filter(slug = self.user.get_username())
+        #if queryset == Account.objects.none():
+        #    self.slug = slugify(self.user.get_username())
+        #super(Account, self).save(*args, **kwargs)
+        success = False
+        while not success:
+            test_slug = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            queryset = Post.objects.filter(slug = test_slug)
+            if not queryset:
+                self.slug = slugify(test_slug)
+                success = True
+        
         super(Account, self).save(*args, **kwargs)
 
     def __str__(self):
         return str(self.user.get_username())
 
 class Post(models.Model):
-    ID = models.IntegerField(primary_key = True, default = 0)
     title = models.CharField(max_length = 64, default = "")
     image = models.ImageField(blank = True)
     caption = models.CharField(max_length = 265, default = "")
@@ -100,7 +117,15 @@ class Post(models.Model):
     )
     
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        success = False
+        if not self.slug:
+            while not success:
+                test_slug = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+                queryset = Post.objects.filter(slug = test_slug)
+                if not queryset:
+                    self.slug = slugify(test_slug)
+                    success = True
+        
         super(Post, self).save(*args, **kwargs)
         
     def __str__(self):

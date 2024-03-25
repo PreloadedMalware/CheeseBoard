@@ -1,37 +1,97 @@
 <!DOCTYPE html>
 <!-- Including navbar at top of page -->
-{% include 'CheeseBoardSite\navbar.html' %}
+{% include 'CheeseBoardSite/navbar.html' %}
 
 <!-- Custom tag used to place files from `templates\CheeseBoardSite\` as a compontent to respect placement of other compontents -->
 {%load custom_tags %}
-
-<title>Cheese Board</title>
-
-<style>
-    /* THIS CSS IS JUST A STARTING POINT, FEEL FREE TO MAKE ANY IMPROVEMENTS */
-    * {
-        box-sizing: border-box;
-    }
-
-    #page {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-
-    #navbar{
-        padding: 1em;
-    }
+{%load staticfiles %}
+<head>
+    <title>Cheese Board</title>
+    <!-- <link rel="stylesheet" href="{% static 'StyleSheet.css' %}"> -->
+    <style>
+        /* THIS CSS IS JUST A STARTING POINT, FEEL FREE TO MAKE ANY IMPROVEMENTS */
+        * {
+            box-sizing: border-box;
+        }
     
-</style>
+        #page {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+    
+        #navbar{
+            padding: 1em;
+        }
+    
+        #create-post-button {
+            position: fixed;
+            bottom: 2.5em;
+            font-family: 'Segoe UI';
+            font-size: 1.5em;
+            right: 4em;
+            background-color: crimson;
+            border-radius: 10px;
+            color: white;
+            z-index: 99999;
+        }
+    
+        #main-grid {
+            display: flex;
+            justify-content: left;
+            align-items: flex-start;
+            gap: 9vw;
+            margin-top: 2em;
+        }
+    
+        #posts-grid {
+            width: 60%;
+        }
+    
+        #side-posts {
+            width: 25%;
+            max-width: 35em;
+        }
+    
+        .list-posts {
+            width: 100%;
+            margin-bottom: 5em;
+        } 
 
-<div id="page">
-    <div id="navbar">
+        #create-post-button {
+            text-decoration: none;
+        }
+    
+        h2 {
+            font-family: 'Segoe UI';
+            font-size: 2em;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="page">
+        <div id="navbar">
+    
+        </div>
+        <!-- Render header custom tag with tags passed in from context_dict -->
+        {% render_header tags %}
         
+        <h2>Posts!</h2>
+        <div id="main-grid">
+            <!-- Render post grid custom tag with posts passed in from context_dict -->
+            <div id="posts-grid">
+                {% render_post_grid posts False%}
+            </div>
+            <div id="side-posts">
+                <!-- Render post list of top posts -->
+                <h2>Most liked posts - Week</h2>
+                <div class="list-posts">
+                    {% render_post_grid mostLiked True%}
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'CheeseBoardSite:create_post' %}" id="create-post-button">Create Post</a>
     </div>
-    <!-- Render header custom tag with tags passed in from context_dict -->
-    {% render_header tags %}
-
-    <!-- Render post grid custom tag with posts passed in from context_dict -->
-    {% render_post_grid posts %}
-</div>
+</body>

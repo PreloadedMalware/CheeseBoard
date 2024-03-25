@@ -7,6 +7,8 @@ from django.db import models, IntegrityError
 from django.contrib.auth.models import User, UserManager
 from CheeseBoardSite.models import Account, Cheese, Badge, Saved, Post, Comment, Stats
 from django.template.defaultfilters import slugify
+import random
+import string
 
 def populate():
     
@@ -14,19 +16,19 @@ def populate():
         {"name" : "Cheddar"},
         {"name" : "Brie"},
         {"name" : "Halloumi"},
-        {"name" : "Camenbert"},
+        {"name" : "Camembert"},
         {"name" : "Edam"},
         {"name" : "Red Leister"},
         {"name" : "Wensleydale"},
         {"name" : "Gouda"},
-        {"name" : "Jalsberg"},
+        {"name" : "Jarlsberg"},
         {"name" : "Mozzarella"},
         {"name" : "Gorgonzola"},
         {"name" : "Somerset-Brie"},
     ]
 
     statss = [
-        {"ID" : 1,
+        {"ID" : 2,
         "timeOnCheeseBoard" : 17,
          "posts" : 0,
          "likesTaken" : 3,
@@ -34,7 +36,7 @@ def populate():
          "commentsTaken" : 0,
          "commentsGiven" : 2,
          "cheesesReferenced" : 0},
-         {"ID" : 2,
+         {"ID" : 1,
         "timeOnCheeseBoard" : 182,
          "posts" : 4,
          "likesTaken" : 15,
@@ -85,7 +87,7 @@ def populate():
          "accountCreationDate" : datetime.date(2020,11,11),
          "dateLastLoggedIn" : datetime.date(2024,11,3),
          "profilePic" : "profile_images/Run.jpg",
-         "statss" : 2,
+         "statss" : 1,
          "faveCheese" : "Cheddar",
          "followers" : ["Steve", "Marge"],
          "following" : ["Steve"],
@@ -99,7 +101,7 @@ def populate():
          "accountCreationDate" : datetime.date(2022,12,20),
          "dateLastLoggedIn" : datetime.date(2023,2,15),
          "profilePic" : "profile_images/Sit.jpg",
-         "statss" : 1,
+         "statss" : 2,
          "faveCheese" : "Red Leister",
          "followers" : [],
          "following" : ["Carlie19"],
@@ -123,7 +125,7 @@ def populate():
 
     post = [
         {
-            "ID" : 1,
+            # "ID" : 1,
             "title" : "First Post!!!",
             "image" : "PostImages/BOARD.jpg",
             "caption" : "I MADE A CHEESE BOARD!!!",
@@ -134,9 +136,10 @@ def populate():
             "timeDate" : datetime.date(2021,3,5),
             "Account" : "Carlie19",
             "cheeses" : ["Somerset-Brie", "Gorgonzola", "Edam"],
+            "slug" : "abcde"
         },
         {
-            "ID" : 2,
+            # "ID" : 2,
             "title" : "Made another board!",
             "image" : "PostImages/cheese Board.jpg",
             "caption" : "I MADE ANOTHER CHEESE BOARD!!!",
@@ -147,9 +150,10 @@ def populate():
             "timeDate" : datetime.date(2021,5,5),
             "Account" : "Carlie19",
             "cheeses" : ["Somerset-Brie", "Gorgonzola", "Edam"],
+            "slug" : "12345"
         },
         {
-            "ID" : 3,
+            # "ID" : 3,
             "title" : "Cheese board trois!!!",
             "image" : "PostImages/images.jpg",
             "caption" : "Look at this presentation of confectionary delights",
@@ -160,9 +164,10 @@ def populate():
             "timeDate" : datetime.date(2023,9,5),
             "Account" : "Carlie19",
             "cheeses" : ["Cheddar", "Jarlsberg", "Mozzarella", "Red Leister"],
+            "slug" :  "54321"
         },
         {
-            "ID" : 4,
+            # "ID" : 4,
             "title" : "Hello CheeseBoard",
             "image" : "PostImages/BOARD.jpg",
             "caption" : "Questions about Somerset-Brie",
@@ -170,12 +175,13 @@ def populate():
             what I can pair / eat it with, and also differenced between somerset brie 
             and it's french counterpart""",
             "likes" : 12, 
-            "timeDate" : datetime.date(2024,1,1),
+            "timeDate" : datetime.date(2024,3,22),
             "Account" : "Steve",
             "cheeses" : ["Somerset-Brie"],
+            "slug" : "edcba"
         },
         {
-            "ID" : 5,
+            # "ID" : 5,
             "title" : "Wake up honey, new cheese board dropped",
             "image" : "PostImages/How-to-Make-a-Cheese-Board-11.jpg",
             "caption" : "Little spring board",
@@ -183,16 +189,17 @@ def populate():
             wensleydale, red leister and halloumi, with branston pickle, carrots, 
             apples, grapes and rosemary""",
             "likes" : 6, 
-            "timeDate" : datetime.date(2024,3,3),
+            "timeDate" : datetime.date(2024,3,22),
             "Account" : "Carlie19",
-            "cheeses" : ["Wensleydale", "Red Leister", "Halloumi"]
+            "cheeses" : ["Wensleydale", "Red Leister", "Halloumi"],
+            "slug" : "ghijk"
             }
     ]
     
     saved = [
         {
-            "name" : "Carl Posts",
-            "posts" : [1,2,3,5],
+            "name" : "Steve Posts",
+            "posts" : ["abcde","12345","54321","ghijk"],
             "account" : "Steve",
         }
     ]
@@ -203,7 +210,7 @@ def populate():
             "likes" : 1,
             "body" : "I like thif",
             "timeDate" : datetime.date(2024,4,3),
-            "post" : 5,
+            "post" : "ghijk",
             "account" : "Marge",
         },
         {
@@ -211,7 +218,7 @@ def populate():
             "likes" : 3,
             "body" : "^s",
             "timeDate" : datetime.date(2024,4,3),
-            "post" : 5,
+            "post" : "ghijk",
             "account" : "Marge",
         },
         {
@@ -219,7 +226,7 @@ def populate():
             "likes" : 3,
             "body" : "Looks lovely",
             "timeDate" : datetime.date(2024,5,3),
-            "post" : 5,
+            "post" : "ghijk",
             "account" : "Steve",
         },
         {
@@ -227,7 +234,7 @@ def populate():
             "likes" : 7,
             "body" : "One is from somerset, the other isn't",
             "timeDate" : datetime.date(2024,4,3),
-            "post" : 4,
+            "post" : "edcba",
             "account" : "Carlie19",
         },
     ]
@@ -257,23 +264,29 @@ def populate():
 
     acc = []
     for i in range(0,3):
+        print("made it to start")
         iCheese = accounts[i]["faveCheese"]
         for each in chz: # Finds the cheese object that is their favourite
             if iCheese == str(each):
                 theICheese = each
-        feruzi = [] # these take the strings in followers and make a list of their corresponding users classes
-        for each in uz:
-            if each in accounts[i]["followers"]:
-                feruzi.append(each)
+        print("done cheeses")
         finguzi = []
         for each in uz:
-            if each in accounts[i]["following"]:
+            if each.get_username() in accounts[i]["following"]:
                 finguzi.append(each)
+        print("done following")
+        feruzi = []
+        for each in uz:
+            if each.get_username() in accounts[i]["followers"]:
+                feruzi.append(each)
+        print("done followers")
         bdgs = []
         for each in uz:
             if each in accounts[i]["badges"]:
                 bdgs.append(each)
-        print(type(sts[accounts[i]["statss"]-1]))
+        print("done badges")
+        print(feruzi)
+        print(type(theICheese))
         acc.append(add_account(uz[i],#corresponding user
                            accounts[i]["dateOfBirth"],
                            accounts[i]["accountCreationDate"],
@@ -282,12 +295,11 @@ def populate():
                            sts[accounts[i]["statss"]-1], #corresponding statss 
                            theICheese,
                            bdgs,
-                           feruzi,
-                           finguzi))
-        print("I:" + str(i))
+                           finguzi,
+                           feruzi))
 
     pst = []
-    ID = 0
+    # ID = 0
     for p in post:
         accountForPost = p["Account"]
         for each in acc:
@@ -295,18 +307,17 @@ def populate():
                 accountForPost = each
         chee = []
         for each in chz:
-            if each in p["cheeses"]:
+            if each.name in p["cheeses"]:
                 chee.append(each)
-        pst.append(add_post(ID,
-                        p["title"],
+        pst.append(add_post(p["title"],
                         p["image"],
                         p["caption"],
                         p["body"],
                         p["likes"],
                         p["timeDate"],
                         accountForPost,
-                        chee))
-        ID += 1
+                        chee,
+                        p["slug"]))
     
     svd = []
     for s in saved:
@@ -316,12 +327,11 @@ def populate():
                 accountForSaved = each
         postss = []
         for each in pst:
-            if (each.ID) in s["posts"]:
+            if (each.slug) in s["posts"]:
                 postss.append(each)
-        for each in postss:
-            svd.append(add_saved(s["name"],
-                         postss,
-                         accountForSaved))
+        svd.append(add_saved(s["name"],
+            postss,
+            accountForSaved))
     
     cmm = []
     for c in comment:
@@ -330,7 +340,7 @@ def populate():
             if accountForComment == str(each):
                 accountForComment = each
         for p in pst:
-            if p.ID == c["ID"]:
+            if p.slug == c["post"]:
                 thisPost = p
         cmm.append(add_comment(c["ID"],
                            c["likes"],
@@ -363,46 +373,52 @@ def add_badge(_name):
 
 def add_user(_u):
     try:
-        u = User.objects.get_or_create(username= _u["username"],
-                                 password= _u["password"],
+        u, created = User.objects.get_or_create(username= _u["username"],
                                  email= _u["email"],
                                  first_name = _u["first_name"],
-                                 last_name = _u["last_name"],)[0]
-        u.save()
+                                 last_name = _u["last_name"],)
+        if created:
+            u.set_password(_u["password"])
+            u.save()
     except IntegrityError:
         u = User.objects.get(username= _u["username"])
     return(u)
 
 def add_account(_user, _dOB, _accountCreationDate, _dateLastIn, 
-                _profile, _stats, _faveCheese, _badges, _followers, 
-                _following):
-    a = Account.objects.get_or_create(user = _user)[0]
-    a.dateOfBirth = _dOB
-    a.accountCreationDate = _accountCreationDate
-    a.dateLastLoggedIn = _dateLastIn
-    a.profilePic = _profile
-    a.statss = _stats
-    a.faveCheese = _faveCheese
-    for each in _badges:
-        a.badges.add(each)
-    for each in _followers:
-        a.followers.add(each)
-    for each in _following:
-        a.following.add(each)
-    a.save()
+                _profile, _stats, _faveCheese, _badges, 
+                _following, _followers):
+    try:
+        a = Account.objects.get_or_create(user = _user, faveCheese = _faveCheese)[0]
+        a.dateOfBirth = _dOB
+        a.accountCreationDate = _accountCreationDate
+        a.dateLastLoggedIn = _dateLastIn
+        a.profilePic = _profile
+        a.statss = _stats
+        a.save()
+        print("made it to badges")
+        for each in _badges:
+            a.badges.add(each)
+        print("done badges")
+        for each in _following:
+            a.following.add(each)
+        for each in _followers:
+            a.followers.add(each)
+        a.save()
+    except IntegrityError:
+        a = Account.objects.get(user = _user)
     return(a)
 
 
-def add_post(_ID, _title, _image, _caption, _body, _likes,
-             _timeDate, _account, _cheeses):
-    p = Post.objects.get_or_create(ID = _ID+1, account = _account)[0]
+def add_post(_title, _image, _caption, _body, _likes,
+             _timeDate, _account, _cheeses, _slug):
+    p = Post.objects.get_or_create(account = _account, slug = _slug)[0]
     p.title = _title
     p.image = _image
     p.caption = _caption
     p.body = _body
     p.likes = _likes
     p.timeDate = _timeDate
-    p.slug = slugify(_title)
+    p.slug = _slug
     for each in _cheeses:
         p.cheeses.add(each)
     p.save()

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% include 'CheeseBoardSite/navbar.html' %}
 
 {% load staticfiles %}
 <html>
@@ -7,8 +8,11 @@
             {% block title_block %}
             {% endblock %}
         </title>
-
+        <!-- <link rel="stylesheet" href="{% static 'StyleSheet.css' %}"> -->
         <style>
+            .errorlist {
+                display: none;
+            }
             #centre {
                 display: flex;
                 justify-content: center;
@@ -58,10 +62,35 @@
             .error {    
                 color: red;
             }
+
+            .scrollable {
+                overflow-y: auto;
+                height: 200px;
+                border: 1px solid #333;
+                border-radius: 5px;
+            }
+
+            #navbar {
+                padding: 2em;
+            }
+
+            #centre input[type=submit] {
+                background-color: crimson;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                padding: 0.5em;
+                cursor: pointer;
+            }
         </style>
+
+        <script src="{% static 'JS/form_baseJS.js' %}"></script>
     </head>
 
-    <body>
+    <body onload="displayError()">
+        <div id="navbar"></div>
+
+
         <div id="centre">
             <h1 id="title">
                 {% block page_title %}

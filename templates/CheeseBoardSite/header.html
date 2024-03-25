@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <style>
     #centre {
         display: flex;
@@ -15,8 +16,14 @@
         margin: 0.2em;
     }
 
-    #mainSearch {
+    #search-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 50%;
+    }
+    #mainSearch {
+        width: 100%;
         padding: 12px 20px;
         margin: 1em;
         margin-bottom: 2em;
@@ -30,6 +37,7 @@
     }
 
     #tag {
+        font-size: 13pt;
         margin: 1em;
         padding-left: 1em;
         padding-right: 1em;
@@ -39,17 +47,32 @@
         font-style: italic;
         border: 1px solid #333;
         border-radius: 10px;
+        text-decoration: none;
     }
-
+    input[type="submit"] {
+            background-color: crimson;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 12pt;
+            padding: 0.5em;
+            cursor: pointer;
+            margin-bottom: .75em;
+        }
 </style>
+
+<script src="{% static 'JS/headerJS.js' %}"></script>
 
 <div id="centre">
     <h1 id="title">Cheese Board</h1>
-    <input type="text" placeholder="Search for cheese..." id="mainSearch" />
+    <form onsubmit="event.preventDefault(); search()" id="search-form">
+        <input type="text" placeholder="Search for cheese..." id="mainSearch" />
+        <input type="submit" value="Go" />
+    </form>
     <br>
     <div id="tags">
         {% for tag in tags %}
-            <span id="tag">{{ tag }}</span>
+            <a id="tag" href="/search/{{ tag }}">{{ tag }}</a>
         {% endfor %}
     </div>
 </div>

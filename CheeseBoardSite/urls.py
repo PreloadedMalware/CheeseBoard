@@ -10,17 +10,14 @@ urlpatterns = [
     # add this url to a button to logout
     path('logout/', views.user_logout, name='logout'),
     path('account', views.account, name='account'),
-    
+    path('account/edit', views.edit_page, name='edit_page'),
+    path('create_post/', views.create_post, name='create_post'),
     path('search/<str:query>/', views.search, name='search'),
-    
-    path('<slug: account_username_slug>/', views.view_page, name = 'view_page'),
-    path('<slug: account_username_slug>/edit_page/', views.edit_page, name = 'edit_page'),
-    path('<slug: account_username_slug>/follow/', views.follow, name = 'follow'),
-    
-    path('<slug: account_username_slug>/<slug: post_title_slug>/', views.view_post, name = 'view_post'),
-    path('<slug: account_username_slug>/new_post/', views.new_post, name = 'new_post'),
-    path('<slug: account_username_slug>/<slug: post_title_slug>/like_post/', views.like_post, name = 'like_post'),
-    path('<slug: account_username_slug>/<slug: post_title_slug>/comment_post/', views.comment_post, name = 'comment_post'),
-    path('<slug: account_username_slug>/<slug: post_title_slug>/save_post/', views.save_post, name = 'save_post'),
-    
+    path('profile/<slug:slug>/', views.view_page, name = 'view_page'),
+    path('profile/<slug:slug>/follow', views.follow_unfollow_account, name='follow'),
+    path('post/<slug:slug>/', views.view_post, name = 'view_post'),
+    path('post/<slug:slug>/save', views.save_post, name='save_post'),
+    path('post/<slug:slug>/like', views.like_post, name='like_post'),
+    path('post/<slug:slug>/comment', views.comment_post, name='comment_post'),
+    path('post/<slug:slug>/like', views.like_comment, name='like_comment'),
 ]

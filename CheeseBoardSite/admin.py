@@ -1,6 +1,12 @@
 from django.contrib import admin
 from CheeseBoardSite.models import Account, Cheese, Badge, Saved, Post, Comment, Stats
-admin.site.register(Account)
+from django.contrib.auth.models import User
+
+class AccountAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug':('user',)}
+
+
+admin.site.register(Account, AccountAdmin)
 admin.site.register(Cheese)
 admin.site.register(Badge)
 admin.site.register(Saved)
