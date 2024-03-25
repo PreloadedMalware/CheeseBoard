@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% include 'CheeseBoardSite/navbar.html' %}
+
+{% load staticfiles %}
+<html>
+    <head>
+        <title>
+            {% block title_block %}
+            {% endblock %}
+        </title>
+        <link rel="stylesheet" href="{% static 'StyleSheet.css' %}">
+    
+        <script src="{% static 'JS/form_baseJS.js' %}"></script>
+    </head>
+
+    <body onload="displayError()">
+        <div id="navbar"></div>
+
+
+        <div id="centre">
+            <h1 id="Formtitle">
+                {% block page_title %}
+                {% endblock %}
+            </h1>
+        
+            {% block form_content %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

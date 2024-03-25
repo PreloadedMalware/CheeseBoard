@@ -1,0 +1,18 @@
+{% load staticfiles %}
+
+<script src="{% static 'JS/headerJS.js' %}"></script>
+<link rel="stylesheet" href="{% static 'StyleSheet.css' %}">
+
+<div id="centre">
+    <h1 id="headerTitle">Cheese Board</h1>
+    <form onsubmit="event.preventDefault(); search()" id="search-form">
+        <input type="text" placeholder="Search for cheese..." id="mainSearch" />
+        <input type="submit" value="Go" />
+    </form>
+    <br>
+    <div id="tags">
+        {% for tag in tags %}
+            <a id="tag" href="/search/{{ tag }}">{{ tag }}</a>
+        {% endfor %}
+    </div>
+</div>

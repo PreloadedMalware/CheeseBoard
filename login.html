@@ -1,0 +1,29 @@
+{% extends 'CheeseBoardSite/form_base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}Login{% endblock %}
+{% block page_title %}Login{% endblock %}
+
+<link rel="stylesheet" href="{% static 'StyleSheet.css' %}"> 
+
+{% block form_content %}
+    <!-- Input login details -->
+    <div class="form-container">
+        <form id="login-form" method="post" action="{% url 'CheeseBoardSite:login' %}">
+            {% csrf_token %}
+            <div class="form-row">
+                <label for="username">Username</label>
+                <input type="text" name="username" value="" />
+            </div>
+
+            <div class="form-row">
+                <label for="password">Password</label>
+                <input type="password" name="password" value="" />
+            </div>
+
+            <br />
+            <input type="submit" value="Login" />
+            <p class="form-message">Don't have an account? <a class="form-link" href="{% url 'CheeseBoardSite:register' %}">Make one!</a></p>
+        </form>
+    </div>
+{% endblock %}
